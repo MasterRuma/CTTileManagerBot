@@ -3,6 +3,10 @@ import utils.redisConnect
 
 app = FastAPI()
 
+@app.get("/")
+def ping():
+    return "pong!"
+
 @app.get("/api/tiles")
 def get_all_redis():
     keys = utils.redisConnect.scan_keys()
