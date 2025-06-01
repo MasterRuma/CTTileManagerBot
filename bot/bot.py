@@ -204,7 +204,8 @@ async def 예약(
         await ctx.followup.send(response, ephemeral=True)
     except Exception as e:
         await ctx.followup.send(f"오류가 발생했습니다: {str(e)}", ephemeral=True)
-        
+
+
 @bot.slash_command(name="시작", description="타일 시작을 지정합니다.")
 async def 시작(
     ctx: discord.ApplicationContext,
@@ -218,6 +219,7 @@ async def 시작(
     except Exception as e:
         await ctx.followup.send(f"오류가 발생했습니다: {str(e)}", ephemeral=True)
 
+
 @bot.slash_command(name="완료", description="타일 점령을 완료하시면 이걸 부탁드립니다.")
 async def 완료(
     ctx: discord.ApplicationContext,
@@ -230,6 +232,12 @@ async def 완료(
         await ctx.followup.send(response, ephemeral=True)
     except Exception as e:
         await ctx.followup.send(f"오류가 발생했습니다: {str(e)}", ephemeral=True)
+
+
+@bot.slash_command(name="전체조회", description="점령한 영토들을 조회할 수 있습니다.")
+async def 전체조회(ctx: discord.ApplicationContext):
+    await ctx.respond("https://bwsd-ct-tiles-info.netlify.app/", ephemeral=True)
+
 
 def start():
     bot.run(os.getenv("TOKEN"))
