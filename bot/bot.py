@@ -1,3 +1,6 @@
+from dis import disco
+from pydoc import describe
+from re import T
 import discord
 from discord.ext import tasks
 import utils.service
@@ -206,6 +209,20 @@ async def 예약(
         await ctx.followup.send(f"오류가 발생했습니다: {str(e)}", ephemeral=True)
 
 
+@bot.slash_command(name="r", description="타일 예약을 지정합니다.")
+async def r(
+    ctx: discord.ApplicationContext,
+    tiles: discord.Option(str, autocomplete=tile_autocomplete),
+):
+    # Defer the response first
+    await ctx.defer(ephemeral=True)
+    try:
+        response = utils.service.reserve(tiles, ctx.author.id)
+        await ctx.followup.send(response, ephemeral=True)
+    except Exception as e:
+        await ctx.followup.send(f"오류가 발생했습니다: {str(e)}", ephemeral=True)
+
+
 @bot.slash_command(name="시작", description="타일 시작을 지정합니다.")
 async def 시작(
     ctx: discord.ApplicationContext,
@@ -220,8 +237,36 @@ async def 시작(
         await ctx.followup.send(f"오류가 발생했습니다: {str(e)}", ephemeral=True)
 
 
-@bot.slash_command(name="완료", description="타일 점령을 완료하시면 이걸 부탁드립니다.")
+@bot.slash_command(name="s", description="타일 시작을 지정합니다.")
+async def s(
+    ctx: discord.ApplicationContext,
+    tiles: discord.Option(str, autocomplete=tile_autocomplete),
+):
+    # Defer the response first
+    await ctx.defer(ephemeral=True)
+    try:
+        response = utils.service.start(tiles, ctx.author.id)
+        await ctx.followup.send(response, ephemeral=True)
+    except Exception as e:
+        await ctx.followup.send(f"오류가 발생했습니다: {str(e)}", ephemeral=True)
+
+
+@bot.slash_command(name="완료", description="점령 완료 타일을 지정합니다.")
 async def 완료(
+    ctx: discord.ApplicationContext,
+    tiles: discord.Option(str, autocomplete=tile_autocomplete),
+):
+    # Defer the response first
+    await ctx.defer(ephemeral=True)
+    try:
+        response = utils.service.complete(tiles, ctx.author.id)
+        await ctx.followup.send(response, ephemeral=True)
+    except Exception as e:
+        await ctx.followup.send(f"오류가 발생했습니다: {str(e)}", ephemeral=True)
+
+
+@bot.slash_command(name="c", description="점령 완료 타일을 지정합니다.")
+async def c(
     ctx: discord.ApplicationContext,
     tiles: discord.Option(str, autocomplete=tile_autocomplete),
 ):
@@ -236,7 +281,84 @@ async def 완료(
 
 @bot.slash_command(name="전체조회", description="점령한 영토들을 조회할 수 있습니다.")
 async def 전체조회(ctx: discord.ApplicationContext):
-    await ctx.respond("https://bwsd-ct-tiles-info.netlify.app/", ephemeral=True)
+    await ctx.respond(os.getenv("URL"), ephemeral=True)
+
+
+@bot.slash_command(name="all", description="점령한 영토들을 조회할 수 있습니다.")
+async def all(ctx: discord.ApplicationContext):
+    await ctx.respond(os.getenv("URL"), ephemeral=True)
+
+
+@bot.slash_command(name="삭제", description="잘못 기재된 정보들을 삭제할 수 있습니다.")
+async def 삭제(
+    ctx: discord.ApplicationContext,
+    tiles: discord.Option(str, autocomplete=tile_autocomplete),
+):
+    await ctx.defer(ephemeral=True)
+    try:
+        response = utils.service.remove(tiles, ctx.author.id)
+        await ctx.followup.send(response, ephemeral=True)
+    except Exception as e:
+        await ctx.followup.send(f"오류가 발생했습니다: {str(e)}", ephemeral=True)
+
+
+@bot.slash_command(
+    name="remove", description="잘못 기재된 정보들을 삭제할 수 있습니다."
+)
+async def remove(
+    ctx: discord.ApplicationContext,
+    tiles: discord.Option(str, autocomplete=tile_autocomplete),
+):
+    await ctx.defer(ephemeral=True)
+    try:
+        response = utils.service.remove(tiles, ctx.author.id)
+        await ctx.followup.send(response, ephemeral=True)
+    except Exception as e:
+        await ctx.followup.send(f"오류가 발생했습니다: {str(e)}", ephemeral=True)
+
+
+@bot.slash_command(name="상태", description="해당 영토의 점령 여부를 확인합니다.")
+async def 상태(
+    ctx: discord.ApplicationContext,
+    tiles: discord.Option(str, autocomplete=tile_autocomplete),
+):
+    await ctx.defer(ephemeral=True)
+    try:
+        response = utils.service.status(tiles)
+        await ctx.followup.send(response, ephemeral=True)
+    except Exception as e:
+        await ctx.followup.send(f"오류가 발생했습니다: {str(e)}", ephemeral=True)
+
+
+@bot.slash_command(name="status", description="해당 영토의 점령 여부를 확인합니다.")
+async def status(
+    ctx: discord.ApplicationContext,
+    tiles: discord.Option(str, autocomplete=tile_autocomplete),
+):
+    await ctx.defer(ephemeral=True)
+    try:
+        response = utils.service.status(tiles)
+        await ctx.followup.send(response, ephemeral=True)
+    except Exception as e:
+        await ctx.followup.send(f"오류가 발생했습니다: {str(e)}", ephemeral=True)
+
+
+@bot.slash_command(name="정보", description="해당 유저의 영토 점령 정보를 확인합니다.")
+async def 정보(ctx: discord.ApplicationContext, player: discord.Member):
+    await ctx.defer(ephemeral=True)
+    try:
+        await ctx.followup.send(f"{os.getenv('URL')}{str(player.id)}", ephemeral=True)
+    except Exception as e:
+        await ctx.followup.send("해당하는 유저는 없습니다!", ephemeral=True)
+
+
+@bot.slash_command(name="view", description="해당 유저의 영토 점령 정보를 확인합니다.")
+async def view(ctx: discord.ApplicationContext, player: discord.Member):
+    await ctx.defer(ephemeral=True)
+    try:
+        await ctx.followup.send(f"{os.getenv('URL')}{str(player.id)}", ephemeral=True)
+    except Exception as e:
+        await ctx.followup.send("해당하는 유저는 없습니다!", ephemeral=True)
 
 
 def start():

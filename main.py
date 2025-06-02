@@ -4,7 +4,7 @@ import bot.bot
 from web.web import app
 
 def run_fastapi():
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    uvicorn.run(app, host="0.0.0.0", port=7860)
 
 def run_discord():
     bot.bot.start()
