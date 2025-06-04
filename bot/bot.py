@@ -361,5 +361,30 @@ async def view(ctx: discord.ApplicationContext, player: discord.Member):
         await ctx.followup.send("해당하는 유저는 없습니다!", ephemeral=True)
 
 
+@bot.slash_command(
+    name="전체지우기", description="[관리자 명령어] 모든 타일의 정보를 삭제합니다."
+)
+async def 전체지우기(ctx: discord.ApplicationContext):
+    await ctx.defer(ephemeral=True)
+    try:
+        response = utils.service.allRemove(ctx.author.id)
+        await ctx.followup.send(response, ephemeral=True)
+    except Exception as e:
+        await ctx.followup.send("해당하는 유저는 없습니다!", ephemeral=True)
+
+
+@bot.slash_command(
+    name="연결테스트",
+    description="[관리자 명령어] Redis와 클라이언트의 연결을 테스트 합니다.",
+)
+async def 연결테스트(ctx: discord.ApplicationContext):
+    await ctx.defer(ephemeral=True)
+    try:
+        response = utils.service.connectTest(ctx.author.id)
+        await ctx.followup.send(response, ephemeral=True)
+    except Exception as e:
+        await ctx.followup.send("해당하는 유저는 없습니다!", ephemeral=True)
+
+
 def start():
     bot.run(os.getenv("TOKEN"))

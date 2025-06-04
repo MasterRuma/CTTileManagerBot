@@ -1,5 +1,9 @@
 import json
 from . import redisConnect
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
 def uppercase(tiles):
@@ -330,3 +334,33 @@ def status(tiles):
         return "데이터 처리 중 오류가 발생했습니다. 관리자에게 문의해주세요."
     except Exception as e:
         return f"처리 중 오류가 발생했습니다: {str(e)}"
+
+
+def allRemove(playerId):
+    try:
+        if playerId == int(os.getenv("ADMIN_ID")):
+            keys = redisConnect.scan_keys()
+            for key in keys:
+                redisConnect.remove(key)
+            return f"모든 영토의 정보가 삭제되었습니다."
+        else:
+            return f"해당 명령어를 사용할 권한이 없습니다."
+    except Exception as e:
+        return f"처리 중 오류가 발생했습니다 : {str(e)}"
+
+
+def connectTest(playerId):
+    try:
+        if playerId == int(os.getenv("ADMIN_ID")):
+            redisConnect.save("test", {"status": "test", "player": "test"})
+            if (
+                redisConnect.validation("test")
+                != '{"status": "test", "player": "test"}'
+            ):
+                return "데이터 테스트 중 잘못된 값을 전송했습니다."
+            redisConnect.remove("test")
+            return "Redis 테스트 완료."
+        else:
+            return "해당 명령어를 사용할 권한이 없습니다."
+    except Exception as e:
+        return f"Redis 연결 중 오류가 발생했습니다: {str(e)}"
