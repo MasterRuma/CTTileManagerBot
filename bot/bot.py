@@ -202,6 +202,9 @@ async def 예약(
 ):
     # Defer the response first
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         response = utils.service.reserve(tiles, ctx.author.id)
         await ctx.followup.send(response, ephemeral=True)
@@ -216,6 +219,9 @@ async def r(
 ):
     # Defer the response first
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         response = utils.service.reserve(tiles, ctx.author.id)
         await ctx.followup.send(response, ephemeral=True)
@@ -230,6 +236,9 @@ async def 시작(
 ):
     # Defer the response first
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         response = utils.service.start(tiles, ctx.author.id)
         await ctx.followup.send(response, ephemeral=True)
@@ -244,6 +253,9 @@ async def s(
 ):
     # Defer the response first
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         response = utils.service.start(tiles, ctx.author.id)
         await ctx.followup.send(response, ephemeral=True)
@@ -258,6 +270,9 @@ async def 완료(
 ):
     # Defer the response first
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         response = utils.service.complete(tiles, ctx.author.id)
         await ctx.followup.send(response, ephemeral=True)
@@ -272,6 +287,9 @@ async def c(
 ):
     # Defer the response first
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         response = utils.service.complete(tiles, ctx.author.id)
         await ctx.followup.send(response, ephemeral=True)
@@ -281,11 +299,17 @@ async def c(
 
 @bot.slash_command(name="전체조회", description="점령한 영토들을 조회할 수 있습니다.")
 async def 전체조회(ctx: discord.ApplicationContext):
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.respond(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     await ctx.respond(os.getenv("URL"), ephemeral=True)
 
 
 @bot.slash_command(name="all", description="점령한 영토들을 조회할 수 있습니다.")
 async def all(ctx: discord.ApplicationContext):
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.respond(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     await ctx.respond(os.getenv("URL"), ephemeral=True)
 
 
@@ -295,6 +319,9 @@ async def 삭제(
     tiles: discord.Option(str, autocomplete=tile_autocomplete),
 ):
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         response = utils.service.remove(tiles, ctx.author.id)
         await ctx.followup.send(response, ephemeral=True)
@@ -310,6 +337,9 @@ async def remove(
     tiles: discord.Option(str, autocomplete=tile_autocomplete),
 ):
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         response = utils.service.remove(tiles, ctx.author.id)
         await ctx.followup.send(response, ephemeral=True)
@@ -323,6 +353,9 @@ async def 상태(
     tiles: discord.Option(str, autocomplete=tile_autocomplete),
 ):
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         response = utils.service.status(tiles)
         await ctx.followup.send(response, ephemeral=True)
@@ -336,6 +369,9 @@ async def status(
     tiles: discord.Option(str, autocomplete=tile_autocomplete),
 ):
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         response = utils.service.status(tiles)
         await ctx.followup.send(response, ephemeral=True)
@@ -346,6 +382,9 @@ async def status(
 @bot.slash_command(name="정보", description="해당 유저의 영토 점령 정보를 확인합니다.")
 async def 정보(ctx: discord.ApplicationContext, player: discord.Member):
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         await ctx.followup.send(f"{os.getenv('URL')}{str(player.id)}", ephemeral=True)
     except Exception as e:
@@ -355,6 +394,9 @@ async def 정보(ctx: discord.ApplicationContext, player: discord.Member):
 @bot.slash_command(name="view", description="해당 유저의 영토 점령 정보를 확인합니다.")
 async def view(ctx: discord.ApplicationContext, player: discord.Member):
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         await ctx.followup.send(f"{os.getenv('URL')}{str(player.id)}", ephemeral=True)
     except Exception as e:
@@ -366,6 +408,9 @@ async def view(ctx: discord.ApplicationContext, player: discord.Member):
 )
 async def 전체지우기(ctx: discord.ApplicationContext):
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         response = utils.service.allRemove(ctx.author.id)
         await ctx.followup.send(response, ephemeral=True)
@@ -379,6 +424,9 @@ async def 전체지우기(ctx: discord.ApplicationContext):
 )
 async def 연결테스트(ctx: discord.ApplicationContext):
     await ctx.defer(ephemeral=True)
+    if not utils.service.vaildRole(ctx.author.roles):
+        await ctx.followup.send(f"해당 권한이 없습니다.", ephemeral=True)
+        return
     try:
         response = utils.service.connectTest(ctx.author.id)
         await ctx.followup.send(response, ephemeral=True)

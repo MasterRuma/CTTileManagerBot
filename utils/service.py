@@ -186,6 +186,13 @@ def tilesValidation(tile):
     return tile in tilesSet
 
 
+def vaildRole(roles):
+    for role in roles:
+        if role.id == int(os.getenv("ROLE_ID")):
+            return True
+    return False
+
+
 def reserve(tiles, userId):
     try:
         tiles = uppercase(tiles)
@@ -207,6 +214,7 @@ def reserve(tiles, userId):
             return f"<@{player}> 님이 {tiles} 점령을 이미 시작하셨습니다."
         elif status == "완료":
             body = {"status": "예약중", "player": userId}
+            redisConnect.remove(tiles)
             redisConnect.save(tiles, body)
             return f"{tiles} 점령 예약이 완료 되었습니다."
 
@@ -230,6 +238,11 @@ def start(tiles, userId):
         json_object = json.loads(data)
         player = json_object.get("player", "알 수 없는 사용자")
         status = json_object.get("status", "알 수 없는 상태")
+        if status == "완료":
+            body = {"status": "시작중", "player": userId}
+            redisConnect.remove(tiles)
+            redisConnect.save(tiles, body)
+            return f"{tiles} 타일의 시작 마크를 표시했습니다. 이제 점령 하셔도 됩니다."
 
         if status == "예약중":
             if player == userId:  # Ensure we're comparing strings
