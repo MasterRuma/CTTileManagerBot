@@ -482,8 +482,17 @@ async def setup(ctx: discord.ApplicationContext):
 @bot.event
 async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
     """유저가 이모지 반응을 추가했을 때 역할을 지급합니다."""
-    global SETUP_MESSAGE_ID
-    if payload.message_id != SETUP_MESSAGE_ID or payload.user_id == bot.user.id:
+    info_message_id_str = os.getenv("INFO_MESSAGE_ID")
+    if not info_message_id_str:
+        return
+
+    try:
+        info_message_id = int(info_message_id_str)
+    except ValueError:
+        print(f"오류: INFO_MESSAGE_ID ('{info_message_id_str}')가 올바른 숫자 형식이 아닙니다.")
+        return
+
+    if payload.message_id != info_message_id or payload.user_id == bot.user.id:
         return
 
     if str(payload.emoji) == "✅":
@@ -503,18 +512,18 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
                 print(f"오류: 역할(ID: {role_id})을 찾을 수 없습니다.")
                 return
 
-            member = guild.get_member(payload.user_id)
+            member = await guild.fetch_member(payload.user_id)
             if not member:
                 return
 
             await member.add_roles(role)
             print(f"{member.name}에게 {role.name} 역할을 부여했습니다.")
         except ValueError:
-            print(
-                f"오류: INFO_ROLE_ID ('{role_id_str}')가 올바른 숫자 형식이 아닙니다."
-            )
+            print(f"오류: INFO_ROLE_ID ('{role_id_str}')가 올바른 숫자 형식이 아닙니다.")
+        except discord.NotFound:
+            print(f"오류: 멤버(ID: {payload.user_id})를 찾을 수 없습니다.")
         except discord.Forbidden:
-            print(f"오류: {member.name}에게 역할을 부여할 권한이 없습니다.")
+            print(f"오류: 역할을 부여할 권한이 없습니다.")
         except Exception as e:
             print(f"역할 부여 중 오류 발생: {e}")
 
@@ -522,8 +531,17 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
 @bot.event
 async def on_raw_reaction_remove(payload: discord.RawReactionActionEvent):
     """유저가 이모지 반응을 제거했을 때 역할을 회수합니다."""
-    global SETUP_MESSAGE_ID
-    if payload.message_id != SETUP_MESSAGE_ID or payload.user_id == bot.user.id:
+    info_message_id_str = os.getenv("INFO_MESSAGE_ID")
+    if not info_message_id_str:
+        return
+
+    try:
+        info_message_id = int(info_message_id_str)
+    except ValueError:
+        print(f"오류: INFO_MESSAGE_ID ('{info_message_id_str}')가 올바른 숫자 형식이 아닙니다.")
+        return
+
+    if payload.message_id != info_message_id or payload.user_id == bot.user.id:
         return
 
     if str(payload.emoji) == "✅":
@@ -543,18 +561,18 @@ async def on_raw_reaction_remove(payload: discord.RawReactionActionEvent):
                 print(f"오류: 역할(ID: {role_id})을 찾을 수 없습니다.")
                 return
 
-            member = guild.get_member(payload.user_id)
+            member = await guild.fetch_member(payload.user_id)
             if not member:
                 return
 
             await member.remove_roles(role)
             print(f"{member.name}에게서 {role.name} 역할을 제거했습니다.")
         except ValueError:
-            print(
-                f"오류: INFO_ROLE_ID ('{role_id_str}')가 올바른 숫자 형식이 아닙니다."
-            )
+            print(f"오류: INFO_ROLE_ID ('{role_id_str}')가 올바른 숫자 형식이 아닙니다.")
+        except discord.NotFound:
+            print(f"오류: 멤버(ID: {payload.user_id})를 찾을 수 없습니다.")
         except discord.Forbidden:
-            print(f"오류: {member.name}에게서 역할을 제거할 권한이 없습니다.")
+            print(f"오류: 역할을 제거할 권한이 없습니다.")
         except Exception as e:
             print(f"역할 제거 중 오류 발생: {e}")
 
