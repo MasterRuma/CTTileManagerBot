@@ -3,3 +3,4 @@ uvicorn
 py-cord
 python-dotenv
 redis
+gunicorn
